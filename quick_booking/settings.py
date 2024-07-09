@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'apps.bookings.apps.BookingsConfig',
     'apps.rentals.apps.RentalsConfig',
     'apps.reviews.apps.ReviewsConfig',
+    'apps.search_history.apps.SearchHistoryConfig',
+    'apps.view_history.apps.ViewHistoryConfig',
 ]
 
 MIDDLEWARE = [
