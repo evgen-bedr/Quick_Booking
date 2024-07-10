@@ -11,7 +11,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name')
+        fields = ('username', 'email', 'first_name', 'last_name', 'role')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -33,7 +33,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff')
+        fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'role')
 
     def clean_password(self):
         return self.initial["password"]
@@ -43,18 +43,18 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
-    list_filter = ('is_staff',)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'role')
+    list_filter = ('is_staff', 'role')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_landlord', 'is_moderator')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone', 'profile_picture')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'role', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined', 'updated_at', 'deleted_at')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2'),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'role'),
         }),
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')

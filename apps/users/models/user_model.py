@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from apps.users.models.custom_user_model import CustomUserManager
+from apps.users.choices.role_choice import Role
 from apps.rentals.models.rental_model import Rental
 
 
@@ -17,8 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
-    is_landlord = models.BooleanField(default=False)
-    is_moderator = models.BooleanField(default=False)
+    role = models.CharField(max_length=30, choices=Role.choices, default=Role.USER)
     profile_picture = models.ImageField(upload_to='images/profile_pics/', null=True, blank=True)
     favorites = models.ManyToManyField('rentals.Rental', related_name='favorited_by')
 
