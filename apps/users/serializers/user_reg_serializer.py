@@ -64,13 +64,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
                 {'password': 'Passwords are not the same.'}
             )
 
-        # Проверка минимальной длины пароля
         if len(password) < 7:
             raise serializers.ValidationError(
                 {'password': 'Password must be at least 7 characters long.'}
             )
 
-        # Дополнительная валидация пароля
         if not re.search(r'[A-Z]', password):
             raise serializers.ValidationError(
                 {'password': 'Password must contain at least one uppercase letter.'}
