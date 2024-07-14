@@ -1,3 +1,5 @@
+# login_user_view.py
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -6,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime
-
+from django.shortcuts import render
 
 class LoginUserView(APIView):
     permission_classes = [AllowAny]
@@ -29,7 +31,7 @@ class LoginUserView(APIView):
                 key='access_token',
                 value=access_token,
                 httponly=True,
-                secure=False,  # Set to True if HTTPS
+                secure=False,  # Установите True для HTTPS
                 samesite='Lax',
                 expires=datetime.fromtimestamp(refresh.access_token['exp']),
             )
@@ -37,7 +39,7 @@ class LoginUserView(APIView):
                 key='refresh_token',
                 value=refresh_token,
                 httponly=True,
-                secure=False,  # Set to True if HTTPS
+                secure=False,  # Установите True для HTTPS
                 samesite='Lax',
                 expires=datetime.fromtimestamp(refresh['exp']),
             )
@@ -47,3 +49,6 @@ class LoginUserView(APIView):
                 {"message": "Invalid email or password"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+def login_view(request):
+    return render(request, 'login.html')
