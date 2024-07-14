@@ -1,11 +1,11 @@
 from datetime import datetime
-
 from rest_framework.request import Request
 from rest_framework.response import Response
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
+from apps.users.authentication import CustomJWTAuthentication
 
 class JWTAuthMiddleware(MiddlewareMixin):
     def process_request(self, request, **kwargs):
@@ -17,23 +17,22 @@ class JWTAuthMiddleware(MiddlewareMixin):
                 token = AccessToken(access_token)
                 if datetime.fromtimestamp(token['exp']) < datetime.now():
                     raise TokenError('Token is expired')
-                request.META['HTTP_AUTHORIZATION'] = f'JWT {access_token}'
-
+                request.META['HTTP_AUTHORIZATION'] = f'Bearer {access_token}'
+                self.update_last_login(request, token)
             except TokenError:
                 new_access_token = self.refresh_access_token(refresh_token)
-
                 if new_access_token:
-                    request.META['HTTP_AUTHORIZATION'] = f'JWT {new_access_token}'
+                    request.META['HTTP_AUTHORIZATION'] = f'Bearer {new_access_token}'
                     request._new_access_token = new_access_token
+                    self.update_last_login(request, AccessToken(new_access_token))
                 else:
                     self.clear_cookies(request)
-
         elif refresh_token:
             new_access_token = self.refresh_access_token(refresh_token)
-
             if new_access_token:
-                request.META['HTTP_AUTHORIZATION'] = f'JWT {new_access_token}'
+                request.META['HTTP_AUTHORIZATION'] = f'Bearer {new_access_token}'
                 request._new_access_token = new_access_token
+                self.update_last_login(request, AccessToken(new_access_token))
             else:
                 self.clear_cookies(request)
 
@@ -57,9 +56,13 @@ class JWTAuthMiddleware(MiddlewareMixin):
             new_access_token = str(refresh.access_token)
             return new_access_token
         except TokenError as e:
-            logger.error(f"Refresh token error: {e}")
             return None
 
     def clear_cookies(self, request):
         request.COOKIES.pop('access_token', None)
         request.COOKIES.pop('refresh_token', None)
+
+    def update_last_login(self, request, token):
+        auth = CustomJWTAuthentication()
+        user = auth.get_user(token)
+        request.user = user

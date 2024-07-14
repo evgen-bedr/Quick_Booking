@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Объявления на модерации{% endblock %}
+
+{% block content %}
+  <h1>Объявления на модерации</h1>
+  <ul>
+    {% for rental in rentals %}
+      <li>
+        <h2>{{ rental.title }}</h2>
+        <p>{{ rental.description }}</p>
+        <a href="{% url 'approve_rental' rental.id %}">Утвердить</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

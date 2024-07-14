@@ -1,0 +1,15 @@
+{% if widget.image_url %}
+    <div class="custom-image-widget">
+        <img src="{{ widget.image_url }}" style="max-height: 150px;"/>
+        <br>
+        {{ widget.input }}
+        <br>
+        {% if widget.is_initial %}
+            <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+            <label for="{{ widget.checkbox_id }}">{{ widget.checkbox_label }}</label>
+        {% endif %}
+        <br>
+    </div>
+{% else %}
+    {{ widget.input }}
+{% endif %}
