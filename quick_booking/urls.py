@@ -20,10 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    #path('admin/', admin.site.urls),
     path('admin/auth/user/', admin.site.urls),
     path('api/user/', include('apps.users.urls')),
     path('api/', include('apps.rentals.urls')),
+    path('api/s/', include('apps.search_and_filters.urls')),
 ]
 
 if settings.DEBUG:
