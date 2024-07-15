@@ -11,6 +11,7 @@ class Rental(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     address = models.CharField(max_length=255)
+    location = models.CharField(max_length=40, null=True, blank=True)
     city = models.CharField(max_length=40)
     country = models.CharField(max_length=40)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -26,11 +27,20 @@ class Rental(models.Model):
     additional_images = models.ManyToManyField('Image', related_name='rentals')
     views_count = models.IntegerField(default=0)
     contact_info = models.CharField(max_length=255, null=True, blank=True)
+    ratings_sum = models.IntegerField(default=0)
+    ratings_count = models.IntegerField(default=0)
+    reviews_count = models.IntegerField(default=0)
     verified = models.BooleanField(default=False)
     rejection_reason = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title
+
+    @property
+    def average_rating(self):
+        if self.ratings_count == 0:
+            return 0
+        return round(self.ratings_sum / self.ratings_count, 1)
 
     def increment_views(self, user, ip_address):
         now = timezone.now()

@@ -45,12 +45,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    'django_extensions',
 
     'apps.users.apps.UsersConfig',
     'apps.bookings.apps.BookingsConfig',
     'apps.rentals.apps.RentalsConfig',
     'apps.reviews.apps.ReviewsConfig',
-    'apps.search_history.apps.SearchHistoryConfig',
+    'apps.search_and_filters.apps.SearchAndFilterConfig',
     'apps.view_history.apps.ViewHistoryConfig',
 ]
 
@@ -71,7 +72,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 1,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',

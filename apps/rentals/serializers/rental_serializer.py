@@ -17,10 +17,11 @@ class RentalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rental
         fields = [
-            'id', 'title', 'description', 'address', 'city', 'country', 'price', 'rooms',
+            'id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms',
             'property_type', 'status', 'created_at', 'updated_at', 'user', 'tags',
             'availability_start_date', 'availability_end_date', 'main_image',
-            'additional_images', 'views_count', 'contact_info', 'verified', 'rejection_reason'
+            'additional_images', 'views_count', 'contact_info', 'ratings_sum', 'ratings_count', 'average_rating',
+            'verified', 'rejection_reason'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'views_count', 'verified', 'rejection_reason']
 
