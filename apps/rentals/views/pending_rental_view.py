@@ -4,7 +4,7 @@ from apps.rentals.models.rental_model import Rental
 from apps.rentals.serializers.rental_serializer import RentalSerializer
 from django.shortcuts import render, redirect
 from apps.rentals.decorators.moderator_decorator import moderator_required
-from apps.rentals.permissions.moderator_and_admin_permission import IsModeratorOrAdmin
+from apps.core.permissions.authenticated_user_moder_superuser import IsModeratorOrAdmin
 
 class PendingRentalViewSet(viewsets.ModelViewSet):
     queryset = Rental.objects.filter(verified=False)
