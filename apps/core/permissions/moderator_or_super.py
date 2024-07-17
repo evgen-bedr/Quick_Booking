@@ -1,3 +1,4 @@
+# apps/core/permissions/moderator_or_super.py
 from rest_framework.permissions import BasePermission
 
 

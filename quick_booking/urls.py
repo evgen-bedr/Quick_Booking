@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/', include('apps.rentals.urls')),
     path('api/s/', include('apps.search_and_filters.urls')),
     path('api/b/', include('apps.bookings.urls')),
+    path('api/', include('apps.reviews.urls')),
 ]
 
 if settings.DEBUG:

@@ -24,11 +24,11 @@ urlpatterns = [
 
     # Маршруты, зарегистрированные с помощью DefaultRouter
     path('', include(router.urls)),
-    path('rental/', RentalViewSet.as_view({'get': 'list'}), name='rental-list'),
-    path('rental/<int:id>/', RentalViewSet.as_view({'get': 'retrieve'}), name='rental-detail'),
-    path('rental/create/', RentalViewSet.as_view({'post': 'create'}), name='rental-create'),
-    path('rental/update/<int:id>/', RentalViewSet.as_view({'put': 'update', 'patch': 'partial_update'}), name='rental-update'),
-    path('rental/delete/<int:id>/', RentalViewSet.as_view({'delete': 'destroy'}), name='rental-delete'),
-    path('rental/remove_images/<int:id>/', RentalViewSet.as_view({'delete': 'remove_images'}), name='rental-remove-images'),
+    path('rentals/', RentalViewSet.as_view({'get': 'list'}), name='rental-list'),
+    path('rentals/<int:id>/', RentalViewSet.as_view({'get': 'retrieve'}), name='rental-detail'),
+    path('rentals/create/', RentalViewSet.as_view({'post': 'create'}), name='rental-create'),
+    path('rentals/update/<int:id>/', RentalViewSet.as_view({'put': 'update', 'patch': 'partial_update'}), name='rental-update'),
+    path('rentals/delete/<int:id>/', RentalViewSet.as_view({'delete': 'destroy'}), name='rental-delete'),
+    path('rentals/remove_images/<int:id>/', RentalViewSet.as_view({'delete': 'remove_images'}), name='rental-remove-images'),
 
 ]
