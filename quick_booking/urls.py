@@ -21,11 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/auth/user/', admin.site.urls),
-    path('api/user/', include('apps.users.urls')),
-    path('api/', include('apps.rentals.urls')),
-    path('api/s/', include('apps.search_and_filters.urls')),
-    path('api/b/', include('apps.bookings.urls')),
-    path('api/', include('apps.reviews.urls')),
+    path('api/v1/', include('apps.router')),
 ]
 
 if settings.DEBUG:
