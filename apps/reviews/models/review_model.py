@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from apps.rentals.models.rental_model import Rental
-from apps.bookings.models.create_booking_model import Booking
+from apps.bookings.models.booking_model import Booking
 
 
 class Review(models.Model):

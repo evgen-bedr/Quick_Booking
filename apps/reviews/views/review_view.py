@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from apps.reviews.models.review_model import Review
 from apps.reviews.serializers.review_serializer import ReviewSerializer
-from apps.bookings.models.create_booking_model import Booking
+from apps.bookings.models.booking_model import Booking
 from apps.rentals.models.rental_model import Rental
 from apps.core.permissions.moderator_or_super import IsModeratorOrSuperUser
 from apps.core.utils.rating_utils import update_rating_and_reviews  # измените импорт
