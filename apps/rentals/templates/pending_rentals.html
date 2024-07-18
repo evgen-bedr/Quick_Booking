@@ -1,16 +1,224 @@
 {% extends "base_generic.html" %}
 
-{% block title %}Объявления на модерации{% endblock %}
+{% load static %}
+
+{% block title %}Rentals{% endblock %}
 
 {% block content %}
-  <h1>Объявления на модерации</h1>
-  <ul>
-    {% for rental in rentals %}
-      <li>
-        <h2>{{ rental.title }}</h2>
-        <p>{{ rental.description }}</p>
-        <a href="{% url 'approve_rental' rental.id %}">Утвердить</a>
-      </li>
-    {% endfor %}
-  </ul>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #343a40; /* Темно-серый фон */
+      margin: 0;
+      padding: 0;
+    }
+    .content-container {
+      background-color: #f8f9fa;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #343a40;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    .header-image {
+      width: 100%;
+      height: auto;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      background-color: #ffffff;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #007bff;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+    a, button {
+      display: inline-block;
+      padding: 10px 0;
+      color: #ffffff;
+      background-color: #28a745;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      width: 70px;
+    }
+    a:hover, button:hover {
+      background-color: #146427;
+    }
+    .reject-button {
+      background-color: #dc3545;
+    }
+    .reject-button:hover {
+      background-color: #84111c;
+    }
+    .images-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .images-container img {
+      width: 240px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .images-container img.expanded {
+      transform: scale(2);
+      z-index: 1000;
+    }
+    .field-label {
+      font-weight: bold;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (min-width: 900px) {
+      .grid-container {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+  </style>
+
+  <div class="content-container">
+    <img src="/media/images/rental_images/header.jpg" alt="Header Image" class="header-image">
+    <h1>Rentals</h1>
+    <ul>
+      {% for rental in rentals %}
+        <li>
+          <h2>{{ rental.title }}</h2>
+          <div class="grid-container">
+            <div class="grid-item">
+              <p class="field-label">Address:</p>
+              <p>{{ rental.address }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Location:</p>
+              <p>{{ rental.location }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">City:</p>
+              <p>{{ rental.city }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Country:</p>
+              <p>{{ rental.country }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Price:</p>
+              <p>{{ rental.price }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Rooms:</p>
+              <p>{{ rental.rooms }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Property type:</p>
+              <p>{{ rental.property_type }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Availability start date:</p>
+              <p>{{ rental.availability_start_date }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Availability end date:</p>
+              <p>{{ rental.availability_end_date }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Contact info:</p>
+              <p>{{ rental.contact_info }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Views count:</p>
+              <p>{{ rental.views_count }}</p>
+            </div>
+            <div class="grid-item">
+              <p class="field-label">Reviews count:</p>
+              <p>{{ rental.reviews_count }}</p>
+            </div>
+          </div>
+
+          <div class="images-container">
+            {% for image in rental.images.all %}
+              <img src="{{ image.image.url }}" alt="Изображение объявления" onclick="toggleImageSize(this)">
+            {% endfor %}
+          </div>
+
+          {% if rental.rejection_reason %}
+            <p class="field-label">Last rejection reason:</p>
+            <p>{{ rental.rejection_reason }}</p>
+          {% endif %}
+
+          <form method="post" action="{% url 'reject_rental' rental.id %}">
+            {% csrf_token %}
+            <p class="field-label">Rejection reason:</p>
+            <textarea name="rejection_reason" placeholder="Enter the reason for rejection"></textarea>
+            <div class="button-group">
+              <a href="{% url 'approve_rental' rental.id %}">Approve</a>
+              <button type="submit" class="reject-button">Reject</button>
+            </div>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script>
+    function toggleImageSize(img) {
+      img.classList.toggle('expanded');
+    }
+  </script>
 {% endblock %}

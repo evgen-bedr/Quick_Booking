@@ -11,16 +11,15 @@ from apps.users.models.user_model import User
 from apps.users.serializers.user_reg_serializer import RegisterUserSerializer
 from apps.users.serializers.update_user_serializer import UpdateUserSerializer
 from apps.users.serializers.user_detail_serializer import UserDetailSerializer
-from apps.users.utils.set_jwt_cookies import set_jwt_cookies
 from apps.core.permissions.moderator_or_super import IsModeratorOrSuperUser
 from apps.core.permissions.is_owner_moderator_superuser import IsOwnerOrModeratorOrSuperUser
 from apps.core.permissions.is_object_owner import IsObjectOwner
 
 class UserViewSet(viewsets.ModelViewSet):
-    pagination_class = PageNumberPagination  # Добавляем пагинацию
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        return User.objects.all().order_by('-date_joined')  # Упорядочение по дате регистрации
+        return User.objects.all().order_by('-date_joined')
 
     def get_serializer_class(self):
         if self.action in ['create', 'register']:

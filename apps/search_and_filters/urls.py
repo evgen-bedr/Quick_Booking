@@ -6,7 +6,7 @@ from apps.search_and_filters.views.search_history_user_view import UserSearchHis
 
 router = DefaultRouter()
 router.register(r'search-history', SearchHistoryViewSet, basename='search-history')
-router.register(r'search', SearchViewSet, basename='search')
+router.register(r'', SearchViewSet, basename='search')
 router.register(r'user-search-history', UserSearchHistoryViewSet, basename='user-search-history')
 
 urlpatterns = [

@@ -3,8 +3,20 @@ from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models.functions import Coalesce
 
 from apps.rentals.choices.rental_choice import PropertyTypeChoices
+
+
+class RentalManager(models.Manager):
+    def with_average_rating(self):
+        return self.annotate(
+            average_rating=ExpressionWrapper(
+                Coalesce(F('ratings_sum'), 0) / Coalesce(F('ratings_count'), 1),
+                output_field=FloatField()
+            )
+        )
 
 
 class Rental(models.Model):
@@ -31,16 +43,13 @@ class Rental(models.Model):
     ratings_count = models.IntegerField(default=0)
     reviews_count = models.IntegerField(default=0)
     verified = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
     rejection_reason = models.TextField(null=True, blank=True)
+
+    objects = RentalManager()  # Используем кастомный менеджер
 
     def __str__(self):
         return self.title
-
-    @property
-    def average_rating(self):
-        if self.ratings_count == 0:
-            return 0
-        return round(self.ratings_sum / self.ratings_count, 1)
 
     def increment_views(self, user, ip_address):
         now = timezone.now()
@@ -51,3 +60,10 @@ class Rental(models.Model):
             self.views_count += 1
             self.save(update_fields=['views_count'])
             cache.set(cache_key, now, timeout=10)
+
+    def get_average_rating(self):
+        if self.ratings_count == 0:
+            return 0
+        return round(self.ratings_sum / self.ratings_count, 1)
+
+    get_average_rating.short_description = 'Average Rating'

@@ -18,14 +18,14 @@ class ImageInline(admin.TabularInline):
 @admin.register(Rental)
 class RentalAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'id', 'user', 'status', 'verified', 'rejection_reason', 'created_at', 'updated_at', 'average_rating'
+        'title', 'id', 'user', 'status', 'verified', 'rejected', 'created_at', 'updated_at', 'get_average_rating'
     )
-    list_filter = ('status', 'verified', 'created_at', 'updated_at')
+    list_filter = ('status', 'verified', 'rejected', 'created_at', 'updated_at')
     search_fields = ('title', 'description', 'user__username', 'user__email')
     readonly_fields = ('id', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms', 'property_type', 'status', 'verified', 'rejection_reason', 'user')
+            'fields': ('id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms', 'property_type', 'status', 'verified', 'rejected', 'rejection_reason', 'user')
         }),
         ('Dates', {
             'fields': ('created_at', 'updated_at')
