@@ -1,3 +1,4 @@
+# apps/rentals/models/tag_model.py
 from django.db import models
 
 from apps.rentals.choices.rental_choice import TagChoices

@@ -1,3 +1,4 @@
+# apps/rentals/choices/rental_choice.py
 from django.db import models
 
 

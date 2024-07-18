@@ -10,24 +10,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('rentals', '0001_initial'),
+        ('search_and_filters', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rental',
+            model_name='usersearchhistory',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='image',
-            name='rental',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='rentals.rental'),
-        ),
-        migrations.AddField(
-            model_name='rental',
-            name='tags',
-            field=models.ManyToManyField(related_name='rentals', to='rentals.tag'),
         ),
     ]
