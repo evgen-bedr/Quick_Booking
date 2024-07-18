@@ -1,3 +1,4 @@
+# apps/rental/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.rentals.views.rental_admin_view import RentalAdminViewSet

@@ -1,3 +1,5 @@
+# apps/reviews/models/review_model.py
+
 from django.db import models
 from django.conf import settings
 from apps.rentals.models.rental_model import Rental
@@ -10,6 +12,7 @@ class Review(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
     rating = models.IntegerField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
+    status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

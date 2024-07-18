@@ -1,3 +1,5 @@
+# apps/rentals/views/pending_rental_view.py
+
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
