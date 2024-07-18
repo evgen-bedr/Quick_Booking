@@ -1,3 +1,4 @@
+# apps/users/models/custom_user_model.py
 from django.contrib.auth.models import BaseUserManager
 
 

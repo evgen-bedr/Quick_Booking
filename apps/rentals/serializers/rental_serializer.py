@@ -4,6 +4,7 @@ from apps.rentals.models.rental_model import Rental
 from apps.rentals.serializers.image_serializer import ImageSerializer
 from apps.rentals.models.tag_model import Tag
 
+
 class RentalSerializer(serializers.ModelSerializer):
     additional_images = ImageSerializer(many=True, read_only=True, source='images')
     main_image = serializers.SerializerMethodField()
@@ -13,12 +14,13 @@ class RentalSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all()
     )
     average_rating = serializers.SerializerMethodField()
+    username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Rental
         fields = [
             'id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms',
-            'property_type', 'status', 'created_at', 'updated_at', 'user', 'tags',
+            'property_type', 'status', 'created_at', 'updated_at', 'user', 'username', 'tags',
             'availability_start_date', 'availability_end_date', 'main_image',
             'additional_images', 'views_count', 'contact_info', 'ratings_sum', 'ratings_count', 'average_rating',
             'verified', 'rejected', 'rejection_reason'

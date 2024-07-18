@@ -1,41 +1,55 @@
-from django.db.models import Q, Case, When, IntegerField, Value
+# apps/search_and_filters/views/search_view.py
+from django.db.models import Q, Case, When, IntegerField, Value, Sum
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 from apps.rentals.models.rental_model import Rental
 from apps.rentals.serializers.rental_serializer import RentalSerializer
-from apps.search_and_filters.models.search_model import SearchHistory
+from apps.search_and_filters.models.search_model import SearchHistory, UserSearchHistory
+from apps.search_and_filters.serializers.search_serializer import SearchHistorySerializer
 
-class SearchViewSet(viewsets.ViewSet):
-    def list(self, request):
-        query = request.GET.get('q', '').strip()
-        user = request.user
+class SearchViewSet(viewsets.ModelViewSet):
+    serializer_class = RentalSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-        # Сохраняем поисковый запрос только если он не пустой
-        if user.is_authenticated and query:
-            search_history, created = SearchHistory.objects.get_or_create(user=user, search_query=query)
-            if not created:
+    def get_queryset(self):
+        queryset = Rental.objects.with_average_rating().filter(status=True, verified=True).order_by('-created_at')
+        query = self.request.GET.get('q', '').strip()
+        user = self.request.user
+
+        # Сохраняем поисковый запрос только если он не пустой и пользователь аутентифицирован
+        if query and user.is_authenticated:
+            search_history, created = SearchHistory.objects.get_or_create(search_query=query)
+            if created:
+                search_history.search_count = 1
+            else:
                 search_history.search_count += 1
-                search_history.save()
+            search_history.save()
+            UserSearchHistory.objects.create(user=user, search_history=search_history)
 
         filters = {
-            'min_price': request.GET.get('min_price'),
-            'max_price': request.GET.get('max_price'),
-            'location': request.GET.getlist('location'),
-            'city': request.GET.getlist('city'),
-            'country': request.GET.get('country'),
-            'rooms': request.GET.get('rooms'),
-            'property_type': request.GET.getlist('property_type'),
-            'tags': request.GET.getlist('tags'),
-            'min_views': request.GET.get('min_views'),
-            'max_views': request.GET.get('max_views'),
-            'min_rating': request.GET.get('min_rating'),
-            'max_rating': request.GET.get('max_rating'),
-            'min_reviews': request.GET.get('min_reviews'),
-            'max_reviews': request.GET.get('max_reviews')
+            'min_price': self.request.GET.get('min_price'),
+            'max_price': self.request.GET.get('max_price'),
+            'location': self.request.GET.getlist('location'),
+            'city': self.request.GET.getlist('city'),
+            'country': self.request.GET.get('country'),
+            'rooms': self.request.GET.get('rooms'),
+            'property_type': self.request.GET.getlist('property_type'),
+            'tags': self.request.GET.getlist('tags'),
+            'min_views': self.request.GET.get('min_views'),
+            'max_views': self.request.GET.get('max_views'),
+            'min_rating': self.request.GET.get('min_rating'),
+            'max_rating': self.request.GET.get('max_rating'),
+            'min_reviews': self.request.GET.get('min_reviews'),
+            'max_reviews': self.request.GET.get('max_reviews')
         }
-        sort_by = request.GET.get('sort_by', 'created_at')
-        sort_order = request.GET.get('sort_order', 'asc')
+        sort_by = self.request.GET.get('sort_by', 'created_at')
+        sort_order = self.request.GET.get('sort_order', 'asc')
 
         sort_fields = {
             'created_at': 'created_at',
@@ -53,7 +67,7 @@ class SearchViewSet(viewsets.ViewSet):
         if sort_order == 'desc':
             sort_by_field = '-' + sort_by_field.lstrip('-')
 
-        results = Rental.objects.all()
+        results = queryset
 
         # Поиск по ключевым словам в тайтле и описании
         q_objects = Q()
@@ -118,9 +132,10 @@ class SearchViewSet(viewsets.ViewSet):
             )
         ).order_by('rank', sort_by_field)
 
-        # Пагинации
-        paginator = PageNumberPagination()
-        paginated_results = paginator.paginate_queryset(results, request)
+        return results
 
-        serializer = RentalSerializer(paginated_results, many=True)
-        return paginator.get_paginated_response(serializer.data)
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def popular_searches(self, request):
+        popular_searches = SearchHistory.objects.values('search_query').annotate(
+            total=Sum('search_count')).order_by('-total')[:10]
+        return Response(popular_searches, status=status.HTTP_200_OK)
