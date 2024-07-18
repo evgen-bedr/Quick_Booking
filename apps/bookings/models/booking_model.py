@@ -1,4 +1,4 @@
-# apps/bookings/models/create_booking_model.py
+# apps/bookings/models/booking_model.py
 from django.db import models
 from django.conf import settings
 from datetime import datetime, timedelta

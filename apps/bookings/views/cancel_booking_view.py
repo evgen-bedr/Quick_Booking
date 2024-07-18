@@ -3,7 +3,7 @@
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from apps.bookings.models.create_booking_model import Booking
+from apps.bookings.models.booking_model import Booking
 from apps.bookings.serializers.booking_serializer import BookingSerializer
 from apps.bookings.choises.booking_choice import BookingChoices
 

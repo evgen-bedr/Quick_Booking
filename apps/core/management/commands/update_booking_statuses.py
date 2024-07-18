@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from apps.bookings.models.create_booking_model import Booking
+from apps.bookings.models.booking_model import Booking
 from apps.bookings.choises.booking_choice import BookingChoices
 
 

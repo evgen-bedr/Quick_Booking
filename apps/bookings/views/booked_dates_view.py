@@ -1,7 +1,8 @@
+# apps/bookings/views/booked_dates_view.py
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from apps.bookings.models.create_booking_model import Booking
+from apps.bookings.models.booking_model import Booking
 from datetime import datetime, timedelta
 
 
@@ -14,14 +15,14 @@ class BookedDatesViewSet(viewsets.ViewSet):
 
         confirmed_bookings = Booking.objects.filter(rental_id=rental_id, status='Confirmed').values('start_date',
                                                                                                     'end_date')
-        occupied_dates = []
+        booked_dates = []
 
         for booking in confirmed_bookings:
             start_date = booking['start_date']
             end_date = booking['end_date']
             current_date = start_date
             while current_date <= end_date:
-                occupied_dates.append(current_date)
+                booked_dates.append(current_date)
                 current_date += timedelta(days=1)
 
-        return Response({'occupied_dates': occupied_dates}, status=status.HTTP_200_OK)
+        return Response({'booked_dates': booked_dates}, status=status.HTTP_200_OK)
