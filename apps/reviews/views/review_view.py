@@ -108,12 +108,4 @@ class ReviewViewSet(viewsets.ModelViewSet):
         update_rating_and_reviews(rental)  # вызов утилиты
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     review = self.get_object()
-    #     if review.user != self.request.user:
-    #         raise PermissionDenied("You do not have permission to edit this review.")
-    #
-    #     if not Booking.objects.filter(user=self.request.user, rental=review.rental, status='Confirmed').exists():
-    #         raise PermissionDenied("You do not have a confirmed booking for this rental.")
-    #
-    #     return super().partial_update(request, *args, **kwargs)
+

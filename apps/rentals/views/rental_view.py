@@ -4,6 +4,7 @@ from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
@@ -11,26 +12,40 @@ from rest_framework.response import Response
 from apps.rentals.models.rental_model import Rental
 from apps.rentals.models.image_rental_model import Image
 from apps.rentals.models.tag_model import Tag
-
 from apps.rentals.serializers.rental_serializer import RentalSerializer
 
+
 class RentalViewSet(viewsets.ModelViewSet):
-    queryset = Rental.objects.all()
+    queryset = Rental.objects.with_average_rating().order_by('average_rating')
     serializer_class = RentalSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     lookup_field = 'id'
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        queryset = Rental.objects.with_average_rating().order_by('-created_at')
+        user = self.request.user
+
+        if user.is_anonymous:
+            return queryset.filter(status=True, verified=True)
+
+        if user.is_superuser or (hasattr(user, 'role') and user.role == 'Moderator'):
+            return queryset
+
+        return queryset.filter(Q(status=True, verified=True) | Q(user=user))
 
     def perform_create(self, serializer):
         with transaction.atomic():
             tags_data = self.request.data.getlist('tags')
             additional_images_data = self.request.FILES.getlist('additional_images')
 
-            rental = serializer.save(user=self.request.user, status=True)  # Устанавливаем статус в True
+            rental = serializer.save(user=self.request.user, status=True)
             tags = [Tag.objects.get_or_create(name=tag_name)[0] for tag_name in tags_data]
             rental.tags.set(tags)
 
             for index, image in enumerate(additional_images_data):
-                Image.objects.create(rental=rental, image=image, is_main=(index == 0))  # Первое изображение становится основным
+                Image.objects.create(rental=rental, image=image,
+                                     is_main=(index == 0))
 
             rental.save()
 
@@ -40,7 +55,7 @@ class RentalViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         instance = self.get_object()
         user = self.request.user
-        original_verified = instance.verified  # Сохраняем текущее значение verified
+        original_verified = instance.verified
 
         if user.is_superuser or (hasattr(user, 'role') and user.role == 'Moderator') or user == instance.user:
             tags_data = self.request.data.getlist('tags', None)
@@ -57,6 +72,7 @@ class RentalViewSet(viewsets.ModelViewSet):
 
             if changing_sensitive_fields:
                 rental.verified = False
+                rental.rejected = False
             else:
                 rental.verified = original_verified
 
@@ -88,18 +104,6 @@ class RentalViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You do not have permission to delete this rental.")
 
         return super().destroy(request, *args, **kwargs)
-
-    def get_queryset(self):
-        queryset = super().get_queryset().order_by('-created_at')
-        user = self.request.user
-
-        if user.is_anonymous:
-            return queryset.filter(status=True, verified=True)
-
-        if user.is_staff or user.is_superuser or (hasattr(user, 'role') and user.role == 'Moderator'):
-            return queryset
-
-        return queryset.filter(Q(user=user) | Q(verified=True))
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
