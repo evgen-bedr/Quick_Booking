@@ -6,9 +6,22 @@ from datetime import timedelta
 
 
 class BookedDatesViewSet(viewsets.ViewSet):
+    """
+    Handles retrieving booked dates for a specific rental.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def list(self, request, rental_id=None):
+        """
+        Retrieve the list of booked dates for a specific rental.
+
+        @param request: Request : Request object containing the request data
+        @param rental_id: str : ID of the rental property
+
+        @return: Response : JSON response with the list of booked dates or error message
+        """
         if not rental_id:
             return Response({'error': 'Rental ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 

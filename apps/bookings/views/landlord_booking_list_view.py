@@ -7,9 +7,21 @@ from apps.bookings.serializers.booking_serializer import BookingSerializer
 
 
 class LandlordBookingListView(viewsets.ViewSet):
+    """
+    Handles retrieval of bookings for landlords.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
+        """
+        Retrieve a list of bookings for the landlord, with optional sorting and filtering by status.
+
+        @param request: Request : Request object containing the request data
+
+        @return: Response : JSON response with list of bookings or error message
+        """
         user = request.user
         if user.role != 'Landlord':
             return Response({'error': 'Permission denied.'}, status=HTTP_403_FORBIDDEN)

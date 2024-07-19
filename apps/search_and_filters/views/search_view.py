@@ -12,11 +12,25 @@ from apps.search_and_filters.models.search_model import SearchHistory, UserSearc
 
 
 class SearchViewSet(viewsets.ModelViewSet):
+    """
+    Handles search operations for rental properties.
+
+    @serializer_class: RentalSerializer : Serializer : Rental serializer
+    @pagination_class: PageNumberPagination : Pagination : Pagination class used by the viewset
+    @permission_classes: [IsAuthenticatedOrReadOnly] : List : Permissions required to access the view
+    """
     serializer_class = RentalSerializer
     pagination_class = PageNumberPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        """
+        Retrieve the queryset of rental properties based on search query and filters.
+
+        @param self: SearchViewSet : Instance of the viewset
+
+        @return: QuerySet : Filtered and sorted rentals based on search query and applied filters
+        """
         queryset = Rental.objects.with_average_rating().filter(status=True, verified=True).order_by('-created_at')
         query = self.request.GET.get('q', '').strip()
         user = self.request.user
@@ -135,6 +149,13 @@ class SearchViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def popular_searches(self, request):
+        """
+        Retrieve the top 10 popular search queries based on search count.
+
+        @param request: Request : The request object containing the request data
+
+        @return: Response : JSON response with the list of popular search queries and their counts
+        """
         popular_searches = SearchHistory.objects.values('search_query').annotate(
             total=Sum('search_count')).order_by('-total')[:10]
         return Response(popular_searches, status=status.HTTP_200_OK)

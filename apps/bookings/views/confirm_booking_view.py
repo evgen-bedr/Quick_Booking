@@ -7,9 +7,22 @@ from apps.bookings.choises.booking_choice import BookingChoices
 
 
 class ConfirmBookingView(viewsets.ViewSet):
+    """
+    Handles booking confirmation or cancellation by the rental owner.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def update(self, request, pk=None):
+        """
+        Confirm or decline a booking request by the rental owner.
+
+        @param request: Request : Request object containing the request data
+        @param pk: str : Primary key of the booking to be updated
+
+        @return: Response : JSON response with updated booking details or error message
+        """
         try:
             booking = Booking.objects.get(pk=pk)
         except Booking.DoesNotExist:

@@ -7,9 +7,21 @@ from apps.bookings.serializers.booking_serializer import BookingSerializer
 
 
 class UserBookingListView(viewsets.ViewSet):
+    """
+    Handles retrieval of bookings for users.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
+        """
+        Retrieve a list of bookings for the user, with optional sorting and filtering by status.
+
+        @param request: Request : Request object containing the request data
+
+        @return: Response : JSON response with list of bookings or error message
+        """
         user = request.user
         sort_by = request.query_params.get('sort_by', 'created_at')
         order = request.query_params.get('order', 'desc')

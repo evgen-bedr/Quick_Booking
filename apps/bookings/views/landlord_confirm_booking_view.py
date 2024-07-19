@@ -8,11 +8,25 @@ from apps.bookings.choises.booking_choice import BookingChoices
 
 
 class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
+    """
+    Handles booking confirmation or cancellation by landlords.
+
+    @serializer_class: BookingSerializer : Serializer : Booking serializer
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    @pagination_class: PageNumberPagination : Pagination : Pagination class used by the viewset
+    """
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        """
+        Retrieve the queryset of bookings for the landlord, with optional sorting and filtering by status.
+
+        @param self: LandlordConfirmBookingViewSet : Instance of the viewset
+
+        @return: QuerySet : Filtered bookings based on user's role and status filters
+        """
         user = self.request.user
         if user.role != 'Landlord':
             return Booking.objects.none()
@@ -34,6 +48,15 @@ class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
         return queryset.order_by(sort_by)
 
     def list(self, request, *args, **kwargs):
+        """
+        Retrieve a paginated list of bookings for the landlord.
+
+        @param request: Request : Request object containing the request data
+        @param args: tuple : Additional positional arguments
+        @param kwargs: dict : Additional keyword arguments
+
+        @return: Response : JSON response with paginated list of bookings
+        """
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -44,6 +67,15 @@ class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        """
+        Confirm or decline a booking request by the landlord.
+
+        @param request: Request : Request object containing the request data
+        @param args: tuple : Additional positional arguments
+        @param kwargs: dict : Additional keyword arguments
+
+        @return: Response : JSON response with updated booking details or error message
+        """
         user = self.request.user
         booking = self.get_object()
 

@@ -7,9 +7,22 @@ from apps.bookings.choises.booking_choice import BookingChoices
 
 
 class CancelBookingView(viewsets.ViewSet):
+    """
+    Handles booking cancellation.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def update(self, request, pk=None):
+        """
+        Cancel a booking if the user has permission and it is within the allowed cancellation period.
+
+        @param request: Request : Request object containing the request data
+        @param pk: str : Primary key of the booking to be cancelled
+
+        @return: Response : JSON response with updated booking details or error message
+        """
         try:
             booking = Booking.objects.get(pk=pk, user=request.user)
         except Booking.DoesNotExist:

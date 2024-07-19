@@ -6,11 +6,25 @@ from apps.reviews.serializers.review_serializer import ReviewSerializer
 
 
 class UserReviewsViewSet(viewsets.ModelViewSet):
+    """
+    Handles operations for managing a user's reviews.
+
+    @serializer_class: ReviewSerializer : Serializer : Review serializer
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    @pagination_class: PageNumberPagination : Pagination : Pagination class used by the viewset
+    """
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        """
+        Retrieve the queryset of reviews for the authenticated user, with optional sorting.
+
+        @param self: UserReviewsViewSet : Instance of the viewset
+
+        @return: QuerySet : Reviews for the authenticated user, optionally sorted
+        """
         user = self.request.user
         queryset = Review.objects.filter(user=user).order_by('-created_at')
 

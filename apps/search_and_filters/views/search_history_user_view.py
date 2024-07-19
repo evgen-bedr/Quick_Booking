@@ -7,9 +7,21 @@ from apps.search_and_filters.serializers.search_serializer import UserSearchHist
 
 
 class UserSearchHistoryViewSet(viewsets.ViewSet):
+    """
+    Handles operations for managing a user's search history.
+
+    @permission_classes: [IsAuthenticated] : List : Permissions required to access the view
+    """
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
+        """
+        List all search history records for the authenticated user, with optional sorting.
+
+        @param request: Request : The request object containing query parameters
+
+        @return: Response : JSON response with the list of search history records or error message
+        """
         user = request.user
         sort_by = request.GET.get('sort_by', 'created_at')
         sort_order = request.GET.get('sort_order', 'desc')
@@ -25,6 +37,14 @@ class UserSearchHistoryViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
+        """
+        Retrieve the search history records for a specific user by user ID, with optional sorting.
+
+        @param request: Request : The request object containing query parameters
+        @param pk: str : The primary key representing the user ID
+
+        @return: Response : JSON response with the user's search history records or error message
+        """
         user = request.user
 
         try:
