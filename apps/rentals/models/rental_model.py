@@ -46,7 +46,7 @@ class Rental(models.Model):
     rejected = models.BooleanField(default=False)
     rejection_reason = models.TextField(null=True, blank=True)
 
-    objects = RentalManager()  # Используем кастомный менеджер
+    objects = RentalManager()
 
     def __str__(self):
         return self.title

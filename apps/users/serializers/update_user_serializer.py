@@ -89,7 +89,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         validated_data.pop('re_password', None)
         if password:
-            instance.set_password(password)  # Ensure the password is hashed
+            instance.set_password(password)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()

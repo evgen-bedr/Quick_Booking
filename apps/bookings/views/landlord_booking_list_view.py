@@ -1,5 +1,3 @@
-# apps/bookings/views/landlord_booking_list_view.py
-
 from rest_framework import viewsets
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from rest_framework.permissions import IsAuthenticated

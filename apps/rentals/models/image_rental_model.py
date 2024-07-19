@@ -1,5 +1,4 @@
 from django.db import models
-from apps.rentals.models.rental_model import Rental
 import os
 
 

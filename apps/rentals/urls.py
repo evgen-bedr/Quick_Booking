@@ -1,4 +1,3 @@
-# apps/rental/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.rentals.views.rental_admin_view import RentalAdminViewSet
@@ -9,7 +8,8 @@ from apps.rentals.views.pending_rental_view import (
     pending_rentals_data,
     pending_rentals_list,
     approve_rental,
-    reject_rental
+    reject_rental,
+
 )
 
 router = DefaultRouter()
@@ -18,6 +18,7 @@ router.register(r'admin/rentals', RentalAdminViewSet, basename='admin-rental')
 router.register(r'admin/pending-rentals', PendingRentalViewSet, basename='pending-rental')
 
 urlpatterns = [
+    path('remove_images/<int:id>/', RentalViewSet.as_view({'delete': 'remove_images'}), name='rental-remove-images'),
     path('admin/pending-rentals/data/', pending_rentals_data, name='pending_rentals_data'),
     path('admin/pending-rentals/list/', pending_rentals_list, name='pending_rentals_list'),
     path('admin/pending-rentals/html/', pending_rentals_view, name='pending_rentals'),

@@ -1,10 +1,10 @@
-# apps/rentals/admin.py
 from django.contrib import admin
 from django.db import models
 from apps.rentals.models.rental_model import Rental
 from apps.rentals.models.tag_model import Tag
 from apps.rentals.models.image_rental_model import Image
 from apps.rentals.widgets.admin_images_widget import AdminImageWidget
+
 
 class ImageInline(admin.TabularInline):
     model = Image
@@ -14,6 +14,7 @@ class ImageInline(admin.TabularInline):
     formfield_overrides = {
         models.ImageField: {'widget': AdminImageWidget},
     }
+
 
 @admin.register(Rental)
 class RentalAdmin(admin.ModelAdmin):
@@ -25,7 +26,9 @@ class RentalAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms', 'property_type', 'status', 'verified', 'rejected', 'rejection_reason', 'user')
+            'fields': (
+            'id', 'title', 'description', 'address', 'location', 'city', 'country', 'price', 'rooms', 'property_type',
+            'status', 'verified', 'rejected', 'rejection_reason', 'user')
         }),
         ('Dates', {
             'fields': ('created_at', 'updated_at')
@@ -42,9 +45,11 @@ class RentalAdmin(admin.ModelAdmin):
             obj.status = True  # установить status в True
         super().save_model(request, obj, form, change)
 
+
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'rental', 'image')
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):

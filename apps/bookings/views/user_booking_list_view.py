@@ -1,5 +1,3 @@
-# apps/booking/views/user_booking_list_view.py
-
 from rest_framework import viewsets
 from rest_framework.status import HTTP_200_OK
 from rest_framework.permissions import IsAuthenticated

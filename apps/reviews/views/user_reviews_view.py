@@ -1,5 +1,3 @@
-# apps/reviews/views/user_reviews_view.py
-
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination

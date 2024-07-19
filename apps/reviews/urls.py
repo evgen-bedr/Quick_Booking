@@ -1,5 +1,3 @@
-# apps/reviews/urls.py
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.reviews.views.review_view import ReviewViewSet

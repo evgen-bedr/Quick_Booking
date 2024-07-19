@@ -1,10 +1,10 @@
-# apps/search_and_filters/views/search_history_user_view.py
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.search_and_filters.models.search_model import UserSearchHistory
 from apps.search_and_filters.serializers.search_serializer import UserSearchHistorySerializer
+
 
 class UserSearchHistoryViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
@@ -47,7 +47,8 @@ class UserSearchHistoryViewSet(viewsets.ViewSet):
         search_history = UserSearchHistory.objects.filter(user_id=user_id).order_by(ordering)
 
         if not search_history.exists():
-            return Response({'detail': 'No search history found for the given user ID.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': 'No search history found for the given user ID.'},
+                            status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserSearchHistorySerializer(search_history, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

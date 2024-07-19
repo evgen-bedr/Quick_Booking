@@ -4,7 +4,6 @@ from apps.rentals.models.image_rental_model import Image
 from apps.rentals.models.rental_model import Rental
 
 
-
 class RentalAdminForm(forms.ModelForm):
     additional_images = forms.ModelMultipleChoiceField(
         queryset=Image.objects.none(),

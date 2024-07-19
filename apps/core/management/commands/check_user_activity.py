@@ -1,5 +1,3 @@
-# apps/core/management/commands/check_user_activity.py
-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta

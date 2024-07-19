@@ -1,9 +1,8 @@
-# apps/bookings/views/booked_dates_view.py
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from apps.bookings.models.booking_model import Booking
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 class BookedDatesViewSet(viewsets.ViewSet):
