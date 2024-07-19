@@ -1,5 +1,3 @@
-# apps/core/management/commands/update_booking_statuses.py
-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from apps.bookings.models.booking_model import Booking

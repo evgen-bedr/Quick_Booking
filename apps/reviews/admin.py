@@ -1,8 +1,7 @@
-# apps/reviews/admin.py
-
 from django.contrib import admin
 from django.utils.html import format_html
 from apps.reviews.models.review_model import Review
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -42,13 +41,11 @@ class ReviewAdmin(admin.ModelAdmin):
     booking_link.admin_order_field = 'booking'
 
     def has_change_permission(self, request, obj=None):
-        # Ограничить изменение отзывов только администратором
         if not request.user.is_superuser:
             return False
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
-        # Ограничить удаление отзывов только администратором
         if not request.user.is_superuser:
             return False
         return super().has_delete_permission(request, obj)

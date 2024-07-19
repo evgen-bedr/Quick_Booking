@@ -1,4 +1,3 @@
-# apps/users/serializers/user_detail_serializer.py
 from rest_framework import serializers
 from apps.users.models.user_model import User
 

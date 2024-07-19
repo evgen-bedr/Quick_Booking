@@ -1,4 +1,3 @@
-# apps/search_and_filters/views/search_history_view.py
 from django.db.models import Sum
 from rest_framework import viewsets, status
 from rest_framework.decorators import action

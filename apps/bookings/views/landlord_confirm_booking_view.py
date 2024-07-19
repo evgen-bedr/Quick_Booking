@@ -1,5 +1,3 @@
-# apps/bookings/views/landlord_confirm_booking_view.py
-
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from apps.bookings.models.booking_model import Booking
 from apps.bookings.serializers.booking_serializer import BookingSerializer
 from apps.bookings.choises.booking_choice import BookingChoices
-from datetime import datetime, timedelta
+
 
 class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
@@ -58,7 +56,7 @@ class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
             booking.msg_to_user = msg_to_user
 
         if action == 'confirm':
-            # Check if the rental is available for the booking dates
+
             conflicting_bookings = Booking.objects.filter(
                 rental=booking.rental,
                 status=BookingChoices.CONFIRMED
@@ -66,7 +64,8 @@ class LandlordConfirmBookingViewSet(viewsets.ModelViewSet):
                 start_date__lt=booking.end_date, end_date__gt=booking.start_date
             )
             if conflicting_bookings.exists():
-                return Response({'The rental is not longer available for the selected dates.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'The rental is not longer available for the selected dates.'},
+                                status=status.HTTP_400_BAD_REQUEST)
 
             booking.status = BookingChoices.CONFIRMED
         elif action == 'decline':

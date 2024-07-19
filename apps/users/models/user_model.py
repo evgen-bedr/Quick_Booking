@@ -1,10 +1,7 @@
-# apps/users/models/user_model.py
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from apps.users.models.custom_user_model import CustomUserManager
 from apps.users.choices.role_choice import Role
-from apps.rentals.models.rental_model import Rental
 
 
 class User(AbstractBaseUser, PermissionsMixin):

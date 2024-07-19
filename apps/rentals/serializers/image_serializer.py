@@ -1,4 +1,3 @@
-# apps/rentals/serializers/image_serializer.py
 from rest_framework import serializers
 from apps.rentals.models.image_rental_model import Image
 

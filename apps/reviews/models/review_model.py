@@ -1,5 +1,3 @@
-# apps/reviews/models/review_model.py
-
 from django.db import models
 from django.conf import settings
 from apps.rentals.models.rental_model import Rental

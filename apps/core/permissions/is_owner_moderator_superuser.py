@@ -1,4 +1,3 @@
-# apps/core/permissions/is_owner_moderator_superuser.py
 from rest_framework.permissions import BasePermission
 
 

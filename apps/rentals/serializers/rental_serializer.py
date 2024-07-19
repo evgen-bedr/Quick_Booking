@@ -1,4 +1,3 @@
-# apps/rentals/serializers/rental_serializer.py
 from rest_framework import serializers
 from apps.rentals.models.rental_model import Rental
 from apps.rentals.serializers.image_serializer import ImageSerializer
@@ -32,7 +31,6 @@ class RentalSerializer(serializers.ModelSerializer):
         rental = Rental.objects.create(**validated_data)
         rental.tags.set(tags_data)
 
-        # Обновляем роль пользователя
         self.update_user_role(rental.user)
 
         return rental
@@ -46,7 +44,6 @@ class RentalSerializer(serializers.ModelSerializer):
                 tag, created = Tag.objects.get_or_create(name=tag_name)
                 instance.tags.add(tag)
 
-        # Обновляем роль пользователя
         self.update_user_role(instance.user)
 
         return instance

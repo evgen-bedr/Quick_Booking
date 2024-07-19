@@ -1,6 +1,5 @@
-# apps/search_and_filters/views/search_view.py
-from django.db.models import Q, Case, When, IntegerField, Value, Sum
-from django.db.models.functions import Coalesce
+from django.db.models import Q, Case, When, IntegerField, Sum
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -10,7 +9,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from apps.rentals.models.rental_model import Rental
 from apps.rentals.serializers.rental_serializer import RentalSerializer
 from apps.search_and_filters.models.search_model import SearchHistory, UserSearchHistory
-from apps.search_and_filters.serializers.search_serializer import SearchHistorySerializer
+
 
 class SearchViewSet(viewsets.ModelViewSet):
     serializer_class = RentalSerializer

@@ -1,4 +1,3 @@
-# apps/rentals/views/rental_view.py
 from django.db import transaction
 from django.db.models import Q
 from rest_framework import viewsets, status
@@ -16,6 +15,16 @@ from apps.rentals.serializers.rental_serializer import RentalSerializer
 
 
 class RentalViewSet(viewsets.ModelViewSet):
+    """
+    Handles CRUD operations for rental properties.
+
+    @queryset: Rental.objects.with_average_rating().order_by('average_rating') : QuerySet : Rentals with average rating
+    @serializer_class: RentalSerializer : Serializer : Rental serializer
+    @permission_classes: [IsAuthenticatedOrReadOnly] : List : Permissions required to access the view
+    @lookup_field: 'id' : str : Field used for lookup by viewset
+    @pagination_class: PageNumberPagination : Pagination : Pagination class used by the viewset
+    """
+
     queryset = Rental.objects.with_average_rating().order_by('average_rating')
     serializer_class = RentalSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -23,6 +32,13 @@ class RentalViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        """
+        Retrieve the queryset of rental properties based on the user's role and authentication status.
+
+        @param self: RentalViewSet : Instance of the viewset
+
+        @return: QuerySet : Filtered rentals based on user's permissions and rental status
+        """
         queryset = Rental.objects.with_average_rating().order_by('-created_at')
         user = self.request.user
 
@@ -35,6 +51,13 @@ class RentalViewSet(viewsets.ModelViewSet):
         return queryset.filter(Q(status=True, verified=True) | Q(user=user))
 
     def perform_create(self, serializer):
+        """
+        Handle the creation of a new rental property, including adding tags and images.
+
+        @param serializer: Serializer : Serializer object containing validated data for the new rental
+
+        @return: Response : JSON response with the serialized rental data
+        """
         with transaction.atomic():
             tags_data = self.request.data.getlist('tags')
             additional_images_data = self.request.FILES.getlist('additional_images')
@@ -53,12 +76,19 @@ class RentalViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
     def perform_update(self, serializer):
+        """
+        Update an existing rental property, including tags and images, and manage verification status.
+
+        @param serializer: Serializer : Serializer object containing validated data for the rental update
+
+        @raises: PermissionDenied : If the user does not have permission to update the rental
+        """
         instance = self.get_object()
         user = self.request.user
         original_verified = instance.verified
 
         if user.is_superuser or (hasattr(user, 'role') and user.role == 'Moderator') or user == instance.user:
-            tags_data = self.request.data.getlist('tags', None)
+            tags_data = self.request.data.getlist('tags')
             additional_images_data = self.request.FILES.getlist('additional_images', None)
             main_image_id = self.request.data.get('main_image_id', None)
 
@@ -72,14 +102,14 @@ class RentalViewSet(viewsets.ModelViewSet):
 
             if changing_sensitive_fields:
                 rental.verified = False
-                rental.rejected = False
             else:
                 rental.verified = original_verified
 
+            rental.rejected = False
+
             if tags_data:
-                for tag_name in tags_data:
-                    tag, created = Tag.objects.get_or_create(name=tag_name.strip())
-                    rental.tags.add(tag)
+                tags = [Tag.objects.get_or_create(name=tag_name.strip())[0] for tag_name in tags_data]
+                rental.tags.set(tags)
 
             if additional_images_data:
                 for image in additional_images_data:
@@ -96,16 +126,35 @@ class RentalViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You do not have permission to edit this rental.")
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Delete a rental property if the user has the necessary permissions.
+
+        @param request: Request : Request object containing the request data
+        @param args: tuple : Additional positional arguments
+        @param kwargs: dict : Additional keyword arguments
+
+        @raises: PermissionDenied : If the user does not have permission to delete the rental
+
+        @return: Response : JSON response confirming the deletion
+        """
         instance = self.get_object()
         user = self.request.user
 
-        # Проверка прав на удаление
         if not (user.is_superuser or (hasattr(user, 'role') and user.role == 'Moderator') or user == instance.user):
             raise PermissionDenied("You do not have permission to delete this rental.")
 
         return super().destroy(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Retrieve a specific rental property and increment its view count.
+
+        @param request: Request : Request object containing the request data
+        @param args: tuple : Additional positional arguments
+        @param kwargs: dict : Additional keyword arguments
+
+        @return: Response : JSON response with the serialized rental data
+        """
         instance = self.get_object()
         ip_address = request.META.get('REMOTE_ADDR')
         instance.increment_views(request.user, ip_address)
@@ -114,6 +163,14 @@ class RentalViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def increment_view(self, request, pk=None):
+        """
+        Custom action to increment the view count of a rental property.
+
+        @param request: Request : Request object containing the request data
+        @param pk: str : Primary key of the rental property
+
+        @return: Response : JSON response with the serialized rental data
+        """
         rental = self.get_object()
         ip_address = request.META.get('REMOTE_ADDR')
         rental.increment_views(request.user, ip_address)
@@ -122,6 +179,16 @@ class RentalViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated], parser_classes=[JSONParser])
     def remove_images(self, request, id=None):
+        """
+        Custom action to remove specific images from a rental property.
+
+        @param request: Request : Request object containing the request data
+        @param id: str : ID of the rental property
+
+        @raises: PermissionDenied : If the user does not have permission to delete images
+
+        @return: Response : JSON response confirming the deletion of images
+        """
         rental = self.get_object()
         user = request.user
 

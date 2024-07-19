@@ -7,6 +7,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from apps.users.authentication import CustomJWTAuthentication
 
+
 class JWTAuthMiddleware(MiddlewareMixin):
     def process_request(self, request, **kwargs):
         access_token = request.COOKIES.get('access_token')

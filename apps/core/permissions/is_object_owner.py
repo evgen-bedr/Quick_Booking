@@ -1,4 +1,3 @@
-# apps/core/permissions/is_object_owner.py
 from rest_framework.permissions import BasePermission
 
 

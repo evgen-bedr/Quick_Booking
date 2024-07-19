@@ -1,4 +1,3 @@
-# apps/bookings/choises/booking_choice.py
 from django.db import models
 
 

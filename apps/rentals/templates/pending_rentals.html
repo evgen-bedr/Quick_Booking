@@ -138,7 +138,7 @@
     <h1>Rentals</h1>
     <ul>
       {% for rental in rentals %}
-        <li>
+        <li><p><strong>ID: {{ rental.id }}</strong></p>
           <h2>{{ rental.title }}</h2>
           <div class="grid-container">
             <div class="grid-item">

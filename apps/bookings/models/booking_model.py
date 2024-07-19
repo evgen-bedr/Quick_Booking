@@ -1,4 +1,3 @@
-# apps/bookings/models/booking_model.py
 from django.db import models
 from django.conf import settings
 from datetime import datetime, timedelta
@@ -29,4 +28,3 @@ class Booking(models.Model):
         if self.end_date < datetime.now().date() and self.status == BookingChoices.CONFIRMED:
             self.status = BookingChoices.COMPLETED
             self.save()
-
